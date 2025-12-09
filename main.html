@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO & Metadata -->
+    <title>שפע בר קיימא | רמב"ם, טכנולוגיה ועתיד האנושות</title>
+    <meta name="description" content="הפלטפורמה הדיגיטלית לחקר החיבור בין רובוטיקה, UBI וחזון אחרית הימים של הרמב"ם. גלו איך טכנולוגיה משרתת רוחניות.">
+    <meta name="keywords" content="רמבם, חסידות, UBI, רובוטיקה, שפע, עתידנות, יהדות, טכנולוגיה">
+    <meta name="author" content="שפע בר קיימא">
+
+    <!-- Open Graph / Facebook / WhatsApp Preview -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://shefa-barkayama.com/">
+    <meta property="og:title" content="שפע בר קיימא - העתיד כבר כאן">
+    <meta property="og:description" content="האם רובוטים יביאו את ימות המשיח? סימולטור אינטראקטיבי המשלב חזון טכנולוגי עם מקורות היהדות.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1200&auto=format&fit=crop">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="שפע בר קיימא - העתיד כבר כאן">
+    <meta property="twitter:description" content="האם רובוטים יביאו את ימות המשיח? כנסו לגלות.">
+    <meta property="twitter:image" content="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1200&auto=format&fit=crop">
+
+    <!-- Favicon (Emoji as Icon) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Secular+One&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <style>
+        body {
+            font-family: 'Heebo', sans-serif;
+            scroll-behavior: smooth;
+        }
+        h1, h2, h3, .brand-font {
+            font-family: 'Secular One', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; 
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+
+        .gradient-text {
+            background: linear-gradient(to left, #2563EB, #D97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+        }
+
+        /* Timeline styles */
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background-color: #E5E7EB;
+            z-index: 0;
+        }
+        
+        .timeline-point {
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-point:hover {
+            transform: scale(1.2);
+        }
+        
+        /* Loading animation for AI */
+        .dot-flashing {
+            position: relative;
+            width: 10px;
+            height: 10px;
+            border-radius: 5px;
+            background-color: #3B82F6;
+            color: #3B82F6;
+            animation: dot-flashing 1s infinite linear alternate;
+            animation-delay: 0.5s;
+        }
+        .dot-flashing::before, .dot-flashing::after {
+            content: "";
+            display: inline-block;
+            position: absolute;
+            top: 0;
+        }
+        .dot-flashing::before {
+            left: -15px;
+            width: 10px;
+            height: 10px;
+            border-radius: 5px;
+            background-color: #3B82F6;
+            color: #3B82F6;
+            animation: dot-flashing 1s infinite alternate;
+            animation-delay: 0s;
+        }
+        .dot-flashing::after {
+            left: 15px;
+            width: 10px;
+            height: 10px;
+            border-radius: 5px;
+            background-color: #3B82F6;
+            color: #3B82F6;
+            animation: dot-flashing 1s infinite alternate;
+            animation-delay: 1s;
+        }
+        @keyframes dot-flashing {
+            0% { background-color: #3B82F6; }
+            50%, 100% { background-color: #e2e8f0; }
+        }
+
+        /* Smooth Anchor Scrolling offset for fixed header */
+        html {
+            scroll-padding-top: 5rem;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-blue-100 selection:text-blue-900 flex flex-col min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-panel shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <span class="text-2xl font-bold brand-font text-blue-600">שפע בר קיימא</span>
+                </div>
+                <div class="hidden md:flex space-x-8 space-x-reverse">
+                    <button onclick="scrollToSection('vision')" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">החזון</button>
+                    <button onclick="scrollToSection('technology')" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">טכנולוגיה</button>
+                    <button onclick="scrollToSection('spirituality')" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">חסידות</button>
+                    <button onclick="scrollToSection('ai-insights')" class="text-blue-600 hover:text-blue-800 bg-blue-50 px-3 py-2 rounded-md text-sm font-bold transition-colors border border-blue-200">AI וגאולה ✨</button>
+                    <button onclick="scrollToSection('research')" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">מחקר</button>
+                    <button onclick="scrollToSection('contact')" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">צור קשר</button>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-blue-600 focus:outline-none p-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-gray-200 absolute w-full shadow-xl">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 text-right">
+                <button onclick="scrollToSection('vision')" class="block w-full text-right text-gray-600 hover:bg-gray-50 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium">החזון</button>
+                <button onclick="scrollToSection('technology')" class="block w-full text-right text-gray-600 hover:bg-gray-50 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium">טכנולוגיה</button>
+                <button onclick="scrollToSection('spirituality')" class="block w-full text-right text-gray-600 hover:bg-gray-50 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium">חסידות</button>
+                <button onclick="scrollToSection('ai-insights')" class="block w-full text-right text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-md text-base font-bold">AI וגאולה ✨</button>
+                <button onclick="scrollToSection('research')" class="block w-full text-right text-gray-600 hover:bg-gray-50 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium">מחקר</button>
+                <button onclick="scrollToSection('contact')" class="block w-full text-right text-gray-600 hover:bg-gray-50 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium">צור קשר</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="vision" class="pt-32 pb-20 bg-gradient-to-br from-blue-50 via-white to-amber-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl mb-6">
+                <span class="block">עידן השפע והדעת</span>
+                <span class="block gradient-text mt-2 text-3xl sm:text-5xl">רמב"ם, רובוטיקה וחסידות</span>
+            </h1>
+            <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500 leading-relaxed">
+                סינתזה ייחודית בין חזון אחרית הימים של הרמב"ם, המהפכה הטכנולוגית (AI ורובוטים), ומודל ה-UBI.
+                העולם מתעלה למצב בו העיסוק היחיד הוא "לדעת את ה'".
+            </p>
+            <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4">
+                <button onclick="scrollToSection('technology')" class="px-8 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 md:py-4 md:text-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">
+                    לחקור את המודל
+                </button>
+                <button onclick="scrollToSection('ai-insights')" class="px-8 py-3 border border-gray-300 text-base font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50 md:py-4 md:text-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                    סימולטור גאולה
+                    <span class="text-amber-500">✨</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-32 pb-24 flex-grow">
+
+        <!-- Section 1: Technology & UBI -->
+        <section id="technology">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-gray-900 brand-font">התשתית החומרית: רובוטים ו-UBI</h2>
+                <div class="w-24 h-1 bg-blue-500 mx-auto mt-4 rounded-full"></div>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
+                    בחלק זה אנו בוחנים כיצד הטכנולוגיה משמשת ככלי להגשמת נבואות הרמב"ם.
+                    בעולם בו רובוטים מבצעים את המלאכה הפיזית, נוצר "שפע בר קיימא" המאפשר הכנסה בסיסית אוניברסלית (UBI).
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <!-- Interactive Chart Panel -->
+                <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-bold text-gray-800">הקצאת זמן אנושית: חול מול קודש</h3>
+                        <div class="flex bg-gray-100 p-1 rounded-lg">
+                            <button onclick="updateChart('current')" id="btn-current" class="px-4 py-1 text-sm rounded-md bg-white shadow-sm text-gray-800 font-medium transition-all">היום</button>
+                            <button onclick="updateChart('future')" id="btn-future" class="px-4 py-1 text-sm rounded-md text-gray-500 hover:text-gray-800 transition-all">ימות המשיח</button>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <canvas id="timeAllocationChart"></canvas>
+                    </div>
+                    
+                    <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100 transition-all duration-300">
+                        <p id="chart-desc" class="text-sm text-blue-800 font-medium text-center">
+                            המצב כיום: רוב הזמן מושקע בהישרדות ופרנסה. הפנאי ללימוד רוחני מצומצם.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Concepts List -->
+                <div class="space-y-6">
+                    <div class="group cursor-pointer p-6 bg-white hover:bg-amber-50 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-200" onclick="highlightConcept(this)">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center text-2xl">🤖</div>
+                            <div class="mr-4">
+                                <h4 class="text-lg font-bold text-gray-900">רובוטיקה ואוטומציה</h4>
+                                <p class="mt-2 text-gray-600 text-sm leading-relaxed">
+                                    "ובאותו הזמן לא יהיה שם לא רעב ולא מלחמה..." (רמב"ם). הרובוטים מחליפים את הצורך במאבק על משאבים ומייצרים שפע חומרי זמין לכל.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="group cursor-pointer p-6 bg-white hover:bg-blue-50 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-200" onclick="highlightConcept(this)">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-2xl">💰</div>
+                            <div class="mr-4">
+                                <h4 class="text-lg font-bold text-gray-900">הכנסה בסיסית אוניברסלית (UBI)</h4>
+                                <p class="mt-2 text-gray-600 text-sm leading-relaxed">
+                                    חלוקת השפע בצורה שוויונית המאפשרת לאדם להשתחרר מדאגת הפרנסה ("פת בסלו") ולהתפנות לעיקר: השגת החכמה.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="group cursor-pointer p-6 bg-white hover:bg-green-50 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-200" onclick="highlightConcept(this)">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-2xl">🌍</div>
+                            <div class="mr-4">
+                                <h4 class="text-lg font-bold text-gray-900">אומות העולם</h4>
+                                <p class="mt-2 text-gray-600 text-sm leading-relaxed">
+                                    השפע והתיקון אינם מוגבלים לישראל בלבד. כל העולם יתעלה, והרובוטים ישרתו את האנושות כולה כדי לאפשר דעת ה' אוניברסלית.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Spirituality & Da'at -->
+        <section id="spirituality">
+            <div class="bg-gray-900 text-white rounded-3xl p-8 lg:p-12 overflow-hidden relative shadow-2xl">
+                <!-- Decorative background elements -->
+                <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-blue-600 rounded-full opacity-20 filter blur-3xl"></div>
+                <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-64 h-64 bg-amber-600 rounded-full opacity-20 filter blur-3xl"></div>
+
+                <div class="relative z-10 text-center mb-10">
+                    <h2 class="text-3xl font-bold brand-font text-white">המטרה: ומלאה הארץ דעה</h2>
+                    <p class="mt-4 text-gray-300 max-w-2xl mx-auto">
+                        ע"פ תורת החסידות וחב"ד, השפע הגשמי הוא רק אמצעי. 
+                        התרשים להלן מציג את התפשטות ה"דעת" (המודעות האלוקית) בעולם כפונקציה של פניות ורווחה.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Plotly 3D Visualization Container -->
+                    <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 h-96 w-full flex items-center justify-center">
+                        <div id="knowledgeHeatmap" class="w-full h-full"></div>
+                    </div>
+
+                    <!-- Explanatory Text / Quotes -->
+                    <div class="flex flex-col justify-center space-y-6">
+                        <blockquote class="border-r-4 border-amber-500 pr-4 italic text-lg text-gray-200">
+                            "ולא יהיה עסק כל העולם אלא לדעת את ה' בלבד... לפיכך יהיו ישראל חכמים גדולים ויודעים דברים הסתומים..."
+                            <footer class="mt-2 text-sm text-amber-400 font-bold not-italic">- רמב"ם, הלכות מלכים יב</footer>
+                        </blockquote>
+
+                        <div class="bg-blue-900/50 p-6 rounded-lg border border-blue-500/30">
+                            <h4 class="text-xl font-bold text-blue-300 mb-2">תפקיד החסידות</h4>
+                            <p class="text-gray-300 text-sm">
+                                תורת חב"ד (חכמה, בינה, דעת) מעניקה את הכלים האינטלקטואליים להשתמש בפנאי שייווצר. 
+                                לא בטלה, אלא התבוננות מעמיקה באחדות ה'. הרובוט משחרר את הידיים, החסידות ממלאת את הראש והלב.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Gemini AI Tools Integration -->
+        <section id="ai-insights">
+            <div class="text-center mb-12">
+                <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full mb-4 inline-block tracking-wide">POWERED BY GEMINI</span>
+                <h2 class="text-3xl font-bold text-gray-900 brand-font">סימולטור הגאולה האישי</h2>
+                <div class="w-24 h-1 bg-amber-500 mx-auto mt-4 rounded-full"></div>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
+                    הבינה המלאכותית מאפשרת לנו להמחיש מושגים מופשטים. השתמשו בכלים מטה כדי לראות את עצמכם בחזון העתידי.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Tool 1: My Future Self -->
+                <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden flex flex-col hover:shadow-xl transition-shadow duration-300">
+                    <div class="bg-blue-600 p-6 text-white">
+                        <h3 class="text-2xl font-bold flex items-center gap-2">
+                            <span>🚀</span> האני העתידי שלי
+                        </h3>
+                        <p class="text-blue-100 text-sm mt-1">איך ייראה יום בחייכם כשהרובוטים יעבדו?</p>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">מהו העיסוק הנוכחי שלך?</label>
+                        <input type="text" id="userProfession" placeholder="לדוגמה: רואה חשבון, מורה, נגר..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 mb-4 transition-colors">
+                        <button onclick="generateFutureRoutine()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-all shadow-md hover:shadow-lg flex justify-center items-center gap-2 transform active:scale-95">
+                            <span>צור סדר יום גאולתי</span>
+                            <span class="text-amber-300">✨</span>
+                        </button>
+                        
+                        <div id="routineOutput" class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200 min-h-[150px] text-gray-700 text-sm leading-relaxed hidden">
+                            <!-- AI Content will go here -->
+                        </div>
+                        <div id="routineLoader" class="hidden mt-8 flex justify-center">
+                            <div class="dot-flashing"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tool 2: Ask the Sage -->
+                <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden flex flex-col hover:shadow-xl transition-shadow duration-300">
+                    <div class="bg-gray-800 p-6 text-white">
+                        <h3 class="text-2xl font-bold flex items-center gap-2">
+                            <span>📜</span> שאל את החכם
+                        </h3>
+                        <p class="text-gray-300 text-sm mt-1">חיבור בין טכנולוגיה, רמב"ם וחסידות</p>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">מה תרצה לדעת על העתיד?</label>
+                        <input type="text" id="userQuestion" placeholder="לדוגמה: איך AI מסתדר עם שבת?" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 mb-4 transition-colors">
+                        <button onclick="askTheSage()" class="w-full bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 rounded-lg transition-all shadow-md hover:shadow-lg flex justify-center items-center gap-2 transform active:scale-95">
+                            <span>שאל את האורקל</span>
+                            <span class="text-amber-300">✨</span>
+                        </button>
+                        
+                        <div id="answerOutput" class="mt-6 p-4 bg-amber-50 rounded-lg border border-amber-100 min-h-[150px] text-gray-800 text-sm leading-relaxed hidden">
+                            <!-- AI Content will go here -->
+                        </div>
+                        <div id="answerLoader" class="hidden mt-8 flex justify-center">
+                            <div class="dot-flashing"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Section 4: Research Plan -->
+        <section id="research">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-gray-900 brand-font">תוכנית המחקר והפעולה</h2>
+                <div class="w-24 h-1 bg-amber-500 mx-auto mt-4 rounded-full"></div>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
+                    מפת הדרכים המחקרית לביסוס המודל של "שפע בר קיימא" על פי מקורות היהדות והחזון הטכנולוגי.
+                </p>
+            </div>
+
+            <div class="relative max-w-4xl mx-auto">
+                <div class="timeline-line hidden md:block"></div>
+                
+                <!-- Timeline Item 1 -->
+                <div class="mb-8 flex justify-between items-center w-full right-timeline">
+                    <div class="order-1 w-5/12 hidden md:block"></div>
+                    <div class="z-20 flex items-center order-1 bg-blue-600 shadow-xl w-10 h-10 rounded-full timeline-point justify-center text-white font-bold">1</div>
+                    <div class="order-1 w-full md:w-5/12 px-6 py-4 bg-white rounded-lg shadow-md border-r-4 border-blue-600">
+                        <h3 class="mb-2 font-bold text-gray-800 text-xl">שלב א': איסוף מקורות</h3>
+                        <p class="text-sm text-gray-600">
+                            ליקוט מקורות מהרמב"ם (הלכות מלכים), מאמרי חסידות חב"ד העוסקים ב"דירה בתחתונים", ומקורות על אומות העולם לעתיד לבוא.
+                        </p>
+                        <span class="inline-block mt-2 text-xs font-semibold text-blue-600 bg-blue-100 px-2 py-1 rounded">הושלם חלקית</span>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 2 -->
+                <div class="mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline">
+                    <div class="order-1 w-5/12 hidden md:block"></div>
+                    <div class="z-20 flex items-center order-1 bg-amber-500 shadow-xl w-10 h-10 rounded-full timeline-point justify-center text-white font-bold">2</div>
+                    <div class="order-1 w-full md:w-5/12 px-6 py-4 bg-white rounded-lg shadow-md border-l-4 border-amber-500 text-right md:text-left">
+                        <h3 class="mb-2 font-bold text-gray-800 text-xl text-right">שלב ב': אינטגרציה טכנולוגית</h3>
+                        <p class="text-sm text-gray-600 text-right">
+                            ניתוח מודלים של UBI ורובוטיקה. השוואה בין "חברת הפנאי" המערבית לבין "חברת הדעת" החסידית. הגדרת ההבדל בין בטלה ליצירה רוחנית.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 3 -->
+                <div class="mb-8 flex justify-between items-center w-full right-timeline">
+                    <div class="order-1 w-5/12 hidden md:block"></div>
+                    <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-10 h-10 rounded-full timeline-point justify-center text-white font-bold">3</div>
+                    <div class="order-1 w-full md:w-5/12 px-6 py-4 bg-white rounded-lg shadow-md border-r-4 border-gray-800">
+                        <h3 class="mb-2 font-bold text-gray-800 text-xl">שלב ג': סינתזה ופרסום</h3>
+                        <p class="text-sm text-gray-600">
+                            כתיבת המסמך המלא: "שפע בר קיימא - לפי הרובוטים ותורת החסידות". עריכת התוכנית להפצה בקרב קהלים דתיים וטכנולוגיים כאחד.
+                        </p>
+                    </div>
+                </div>
+                
+                 <!-- Timeline Item 4 -->
+                <div class="mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline">
+                    <div class="order-1 w-5/12 hidden md:block"></div>
+                    <div class="z-20 flex items-center order-1 bg-green-500 shadow-xl w-10 h-10 rounded-full timeline-point justify-center text-white font-bold">4</div>
+                    <div class="order-1 w-full md:w-5/12 px-6 py-4 bg-white rounded-lg shadow-md border-l-4 border-green-500 text-right md:text-left">
+                        <h3 class="mb-2 font-bold text-gray-800 text-xl text-right">שלב ד': יישום גלובלי</h3>
+                        <p class="text-sm text-gray-600 text-right">
+                             פיתוח מודלים חינוכיים לאומות העולם ("שבע מצוות בני נח" בהקשר של שפע ומוסר), ושימוש ב-AI להפצת הדעת.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- New Section: Contact -->
+        <section id="contact" class="bg-blue-50 py-16">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-gray-900 brand-font">הצטרפו למהפכה</h2>
+                    <p class="mt-4 text-gray-600">
+                        יש לכם רעיונות? רוצים לקחת חלק במחקר? כתבו לנו.
+                    </p>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-8 md:p-10">
+                    <form class="space-y-6" onsubmit="event.preventDefault(); alert('תודה! הודעתך התקבלה. נחזור אליך בהקדם.');">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700">שם מלא</label>
+                                <input type="text" id="name" required class="mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700">כתובת אימייל</label>
+                                <input type="email" id="email" required class="mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-gray-700">ההודעה שלך</label>
+                            <textarea id="message" rows="4" required class="mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-gray-900 text-white font-bold py-3 rounded-md hover:bg-gray-800 transition-colors shadow-lg">
+                            שלח הודעה
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-right">
+            <div>
+                <h3 class="text-xl font-bold brand-font text-blue-400 mb-4">שפע בר קיימא</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    מיזם דיגיטלי לחיבור עולמות הרוח והחומר, מתוך אמונה שהטכנולוגיה היא כלי שרת בידי הגאולה.
+                </p>
+            </div>
+            <div>
+                <h3 class="text-lg font-bold text-white mb-4">קישורים מהירים</h3>
+                <ul class="space-y-2 text-sm text-gray-400">
+                    <li><a href="#vision" class="hover:text-blue-400 transition-colors">החזון</a></li>
+                    <li><a href="#technology" class="hover:text-blue-400 transition-colors">רובוטיקה ו-UBI</a></li>
+                    <li><a href="#ai-insights" class="hover:text-blue-400 transition-colors">סימולטור גאולה</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-lg font-bold text-white mb-4">יצירת קשר</h3>
+                <ul class="space-y-2 text-sm text-gray-400">
+                    <li>info@shefa-barkayama.com</li>
+                    <li>בני ברק / ירושלים / הענן הדיגיטלי</li>
+                    <li class="flex justify-center md:justify-start gap-4 mt-4">
+                        <a href="#" class="text-gray-400 hover:text-white"><span class="sr-only">Facebook</span>f</a>
+                        <a href="#" class="text-gray-400 hover:text-white"><span class="sr-only">Twitter</span>t</a>
+                        <a href="#" class="text-gray-400 hover:text-white"><span class="sr-only">LinkedIn</span>in</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 mt-12 pt-8 border-t border-gray-800 text-center text-xs text-gray-600">
+            <p>© 2024 שפע בר קיימא. כל הזכויות שמורות. נבנה באמצעות בינה מלאכותית.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // API Key for Gemini - Set to empty string for environment execution
+        const apiKey = ""; 
+
+        // State Management
+        const state = {
+            currentMode: 'current', // 'current' or 'future'
+            chartInstance: null
+        };
+
+        // Data Store for Charts
+        const chartData = {
+            current: {
+                data: [60, 20, 15, 5], 
+                label: 'חלוקת זמן נוכחית (שעות בשבוע)',
+                desc: 'המצב כיום: רוב הזמן מושקע בהישרדות ופרנסה (עבודה פיזית ובירוקרטיה). הפנאי ללימוד רוחני מצומצם ביותר.',
+                color: '#94a3b8'
+            },
+            future: {
+                data: [0, 5, 25, 70],
+                label: 'ימות המשיח (שפע בר קיימא)',
+                desc: 'המצב העתידי: רובוטים ו-AI מבצעים את כל העבודה. UBI מספק ביטחון. 70% מהזמן מוקדש ל"לדעת את ה\'" ולימוד.',
+                color: '#d97706'
+            }
+        };
+
+        // --- Gemini API Logic ---
+        async function callGemini(prompt) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }]
+                    })
+                });
+
+                if (!response.ok) throw new Error('Network response was not ok');
+                
+                const data = await response.json();
+                return data.candidates[0].content.parts[0].text;
+            } catch (error) {
+                console.error("Gemini API Error:", error);
+                return "מצטערים, המערכת נתקלה בשגיאה. אנא נסה שנית מאוחר יותר.";
+            }
+        }
+
+        async function generateFutureRoutine() {
+            const profession = document.getElementById('userProfession').value;
+            const outputDiv = document.getElementById('routineOutput');
+            const loader = document.getElementById('routineLoader');
+
+            if (!profession) {
+                alert("אנא הזן עיסוק");
+                return;
+            }
+
+            outputDiv.classList.add('hidden');
+            loader.classList.remove('hidden');
+
+            const systemPrompt = `
+                Context: You are a Chassidic Futurist expert in Rambam's Messianic vision. 
+                Task: Describe a daily routine for a person who WAS a ${profession} in the old world, but now lives in the Era of Mashiach/Abundance.
+                Key Concept: Robots do all physical work. The person uses their specific talents (from being a ${profession}) for spiritual pursuits (Da'at Hashem) and teaching others.
+                Structure: Give 3 specific time slots (Morning, Afternoon, Evening).
+                Tone: Inspiring, mystical but grounded, joyful.
+                Language: Hebrew.
+                Length: Keep it concise (max 100 words).
+            `;
+
+            const result = await callGemini(systemPrompt);
+            const formattedResult = result.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+
+            loader.classList.add('hidden');
+            outputDiv.innerHTML = formattedResult;
+            outputDiv.classList.remove('hidden');
+        }
+
+        async function askTheSage() {
+            const question = document.getElementById('userQuestion').value;
+            const outputDiv = document.getElementById('answerOutput');
+            const loader = document.getElementById('answerLoader');
+
+            if (!question) {
+                alert("אנא שאל שאלה");
+                return;
+            }
+
+            outputDiv.classList.add('hidden');
+            loader.classList.remove('hidden');
+
+            const systemPrompt = `
+                Context: You are a Sage expert in Maimonides (Rambam) and Chabad Chassidus, as well as modern technology (UBI, AI, Robots).
+                User Question: ${question}
+                Task: Answer the question by synthesizing Torah sources with technological abundance. Explain how the tech enables the spiritual goal.
+                Style: Wise, patient, connecting material abundance to spiritual knowledge.
+                Language: Hebrew.
+                Length: Concise (max 3-4 sentences).
+            `;
+
+            const result = await callGemini(systemPrompt);
+            const formattedResult = result.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+            loader.classList.add('hidden');
+            outputDiv.innerHTML = formattedResult;
+            outputDiv.classList.remove('hidden');
+        }
+
+        // --- Chart.js Initialization ---
+        function initChart() {
+            const ctx = document.getElementById('timeAllocationChart').getContext('2d');
+            
+            state.chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['עבודה / פרנסה', 'תחזוקה פיזית', 'פנאי ומשפחה', 'לימוד ודעת ה\''],
+                    datasets: [{
+                        label: chartData.current.label,
+                        data: chartData.current.data,
+                        backgroundColor: [
+                            '#ef4444', 
+                            '#f59e0b', 
+                            '#3b82f6', 
+                            '#6366f1'  
+                        ],
+                        borderWidth: 1,
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'אחוז מהזמן הער'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y + '% מהזמן';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- Plotly.js Initialization ---
+        function initPlotly() {
+            const size = 20;
+            const zData = [];
+            for (let i = 0; i < size; i++) {
+                const row = [];
+                for (let j = 0; j < size; j++) {
+                    const dist = Math.sqrt(Math.pow(i - size/2, 2) + Math.pow(j - size/2, 2));
+                    const value = Math.sin(dist / 3) * 10 + (state.currentMode === 'future' ? 20 : 5);
+                    row.push(value);
+                }
+                zData.push(row);
+            }
+
+            const data = [{
+                z: zData,
+                type: 'surface',
+                colorscale: 'Viridis',
+                showscale: false,
+                opacity: 0.9
+            }];
+
+            const layout = {
+                title: { text: 'התפשטות הדעת בעולם', font: { color: '#ffffff' } },
+                autosize: true,
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                margin: { l: 0, r: 0, b: 0, t: 30 },
+                scene: {
+                    xaxis: { showgrid: false, zeroline: false, showticklabels: false },
+                    yaxis: { showgrid: false, zeroline: false, showticklabels: false },
+                    zaxis: { showgrid: false, zeroline: false, showticklabels: false },
+                    camera: { eye: {x: 1.5, y: 1.5, z: 1.2} }
+                }
+            };
+
+            const config = { responsive: true, displayModeBar: false };
+            Plotly.newPlot('knowledgeHeatmap', data, layout, config);
+        }
+
+        // --- Chart Interactions ---
+        window.updateChart = function(mode) {
+            state.currentMode = mode;
+            const btnCurrent = document.getElementById('btn-current');
+            const btnFuture = document.getElementById('btn-future');
+            const descEl = document.getElementById('chart-desc');
+
+            if (mode === 'current') {
+                btnCurrent.className = "px-4 py-1 text-sm rounded-md bg-white shadow-sm text-gray-800 font-medium transition-all";
+                btnFuture.className = "px-4 py-1 text-sm rounded-md text-gray-500 hover:text-gray-800 transition-all";
+                state.chartInstance.data.datasets[0].data = chartData.current.data;
+                state.chartInstance.data.datasets[0].backgroundColor = ['#ef4444', '#f59e0b', '#3b82f6', '#6366f1'];
+                descEl.innerText = chartData.current.desc;
+            } else {
+                btnFuture.className = "px-4 py-1 text-sm rounded-md bg-amber-100 shadow-sm text-amber-900 font-medium transition-all";
+                btnCurrent.className = "px-4 py-1 text-sm rounded-md text-gray-500 hover:text-gray-800 transition-all";
+                state.chartInstance.data.datasets[0].data = chartData.future.data;
+                state.chartInstance.data.datasets[0].backgroundColor = ['#d1d5db', '#d1d5db', '#fbbf24', '#4f46e5']; 
+                descEl.innerText = chartData.future.desc;
+            }
+            state.chartInstance.update();
+            initPlotly();
+        };
+
+        window.scrollToSection = function(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth' });
+                const menu = document.getElementById('mobile-menu');
+                if (!menu.classList.contains('hidden')) {
+                    menu.classList.add('hidden');
+                }
+            }
+        };
+
+        window.highlightConcept = function(el) {
+            document.querySelectorAll('.group').forEach(div => {
+                div.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-50');
+            });
+            el.classList.add('ring-2', 'ring-blue-500');
+        };
+
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initChart();
+            initPlotly();
+            window.addEventListener('resize', () => {
+                Plotly.Plots.resize('knowledgeHeatmap');
+            });
+        });
+    </script>
+</body>
+</html>
